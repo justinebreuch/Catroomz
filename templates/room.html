@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/path/to/room.js"></script>
+		<meta name="roomName" content="{{roomName}}">
+
+	    <title>Room: {{roomName}}</title>
+	    <link rel="stylesheet" href="main.css">
+	</head>
+	<body>
+		<h1><a href="/">Home</a></h1>
+		<h2>Welcome, <span id="nicknameDisplay"></span></h2>
+		<div id="messages">
+			
+		</div>
+
+		<form method="POST" action="/{{roomName}}/messages" id="messageForm">
+    		<input type="text" name="message" id="messageField">
+    		<input type="submit" value="Send" style="width: 100px; top: -8px; position: relative;">
+		</form>
+		
+		
+		<h4 id="active_users">Active Users</h4>
+		<ul id="active_users">
+			
+		</ul>
+	</body>
+
+	<script type="text/javascript">
+	
+		function meta(name) {
+		    var tag = document.querySelector('meta[name=' + name + ']');
+		    if (tag != null)
+		        return tag.content;
+		    return '';
+		}
+
+		var roomName = meta('roomName');
+		var socket = io.connect();
+
+		// fired when the page has loaded
+		window.addEventListener('load', function(){
+
+			var messageForm = document.getElementById('messageForm');
+    		messageForm.addEventListener('submit', sendMessage, false);
+    		
+
+    		function sendMessage(e) {
+				// prevent the page from redirecting
+			    e.preventDefault();
+
+			    // get the parameters
+	    		var message = $("#messageField").val();
+
+	    		// emit message
+			    socket.emit('message', {roomName: meta('roomName'), nickname: nickname, message: message });
+
+			    $("#messageField").val('')
+			}
+
+	
+		    // handle incoming messages
+		    socket.on('message', function(nickname, message){
+		    	console.log("Incoming message is: ");
+		    	console.log(message);
+		        output = "<p><span class='nickname'>" + nickname + "</span>: " + message + "</p>";
+		        $('#messages').append(output);
+		    });
+
+		    // // handle room membership changes
+		    socket.on('membershipChanged', function() {
+		    	broadcastMembershipChange(meta('roomName'));
+		    });
+
+		     // the client disconnected/closed their browser window
+		    socket.on('leave', function() {
+		        console.log("TRYING TO d");
+		        console.log(socket.roomName);
+		    	broadcastMembershipChange(meta('roomName'));
+		    });
+
+		    // get the nickname
+		    var nickname = prompt('Enter a nickname:');
+		    $('#nicknameDisplay').html(nickname);
+
+
+		    // get the message
+		    var message = $("#messageField").val();
+
+
+		    // join the room
+		    socket.emit('join', meta('roomName'), nickname, function(messages){
+		    	console.log("messages are");
+		    	console.log(messages);
+		    	output = ""
+        		for (var i = 0; i < messages.length; i++) {
+		        	output += ("<p><span class='nickname'>" + messages[i].nickname + "</span>: " + messages[i].body + "</p>");
+		        }
+		        $('#messages').html(output);
+		        broadcastMembershipChange(meta('roomName'));
+		    });
+
+
+		    function broadcastMembershipChange(roomName) {
+    			// send them out
+				socket.emit('membershipChange', roomName, function(userNames) {
+					console.log("NEW MEMBER");
+					output = ""
+        			for (var i = 0; i < userNames.length; i++) {
+		        		output += ("<p>" + userNames[i] + "</p>");
+		        	}
+					$('#active_users').html(output);
+				});
+			}
+		    
+		}, false);
+
+
+	</script>
+</html>

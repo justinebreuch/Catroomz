@@ -1,0 +1,75 @@
+body {
+	font-family:'Helvetica Neue';
+	background-color:#fff;
+	color: #040d14;
+}
+
+.main_content {
+	margin: 0 auto;
+	height:100%;
+	background-image: url('vintagecat.jpg');
+	background-repeat: no-repeat;
+}
+
+aside {
+    position: fixed;
+    top: 0;
+    right: 20;
+    background-color: rgba(68, 68, 68, .3);
+    padding: 20px;
+}
+
+#messages {
+	min-height: 500px;
+    width: 500px;
+    max-height:500px;
+    padding: 15px;
+    overflow: scroll;
+    border: 5px solid black;
+}
+
+span.nickname {
+	font-weight:bold;
+}
+
+h3 {
+	color:white;
+}
+
+a {
+	text-decoration:none;
+	color: rgb(0, 207, 152);
+}
+
+button, input[type="submit"] {
+	border: 1px solid rgb(0, 207, 152);
+    font-family: 'Helvetica Neue';
+    text-transform: lowercase;
+    background-color: rgb(0, 207, 152);
+    color: white;
+    padding: 10px;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+input {
+	border-bottom: 5px solid black;
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    width: 540px;
+    margin-top: 30px;
+}
+
+#options {
+    position:fixed;
+    top:0;
+    right:0;
+}
+
+#active_users {
+    position: fixed;
+    right: 20px;
+    top: 50px;
+}
+
