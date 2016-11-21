@@ -71,8 +71,8 @@ io.sockets.on('connection', function(socket){
     var roomName;
     socket.on('join', function(roomName, nickname, callback){
         
-        socket.join(roomName); // this is a socket.io method
-        socket.nickname = nickname; // yay JavaScript! see below
+        socket.join(roomName); 
+        socket.nickname = nickname; 
         socket.roomName = roomName;
         
         // get a list of messages currently in the room, then send it back
@@ -103,7 +103,7 @@ io.sockets.on('connection', function(socket){
 
     // the client emits this when they want to send a message
     socket.on('message', function(message){
-        // process an incoming message (don't forget to broadcast it to everyone!
+        // process an incoming message 
         console.log(message);
 
         var roomName = message.roomName;
